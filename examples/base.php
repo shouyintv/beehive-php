@@ -48,3 +48,21 @@ Log::alert('tttt', ['a' => 'b']);
 Log::notice('tttt', ['a' => 'b']);
 Log::info('tttt', ['a' => 'b', 'ccc' => 'bbb']);
 Log::emergency('tttt', ['a' => 'b']);
+
+$connection = new Beehive\Msa\AsyncClient('192.168.1.177', 9600);
+$connection->on(Beehive\Msa\AsyncClient::EVENT_ERROR, function($connection) {
+    Log::error('container connect error');
+});
+
+$connection->on(Beehive\Msa\AsyncClient::EVENT_CLOSE, function($connection) {
+    Log::error('container connect close');
+});
+
+$connection->on(Beehive\Msa\AsyncClient::EVENT_CONNECT, function($connection) {
+    Log::error('container connect connect');
+});
+
+$connection->on(Beehive\Msa\AsyncClient::EVENT_RECEIVE, function($connection, $data) {
+    Log::error('container connect receive', ['data' => $data]);
+});
+$connection->connect();
