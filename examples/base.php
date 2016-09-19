@@ -64,7 +64,7 @@ $connection->on(Beehive\Msa\AsyncClient::EVENT_CONNECT, function($connection) {
 
     $accepts = [
         'name' => 'PhpMsaTest',
-        'tag' => 111111,
+        'id' => 111111,
         'accepts' => [[
             'service' => 'PhpMsaTest.Service.Register',
             'boardcast' => false,
@@ -72,10 +72,6 @@ $connection->on(Beehive\Msa\AsyncClient::EVENT_CONNECT, function($connection) {
         ]]
     ];
     $packet->body = $accepts;
-    print_r($packet);
-
-    var_dump($packet->pack());
-
     $connection->send($packet->pack());
 });
 
@@ -83,6 +79,7 @@ $connection->on(Beehive\Msa\AsyncClient::EVENT_RECEIVE, function($connection, $d
     Log::error('container connect receive', ['data' => $data]);
     $packet = new Beehive\Msa\JsonPacket();
     $packet->inStream($data);
-    print_r($packet);
+    $packet->flag = $packet->flag | 1;
+    $connection->send($packet->pack());
 });
 $connection->connect();
