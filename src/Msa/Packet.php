@@ -19,6 +19,8 @@ class Packet
 
     protected $packet = [];
 
+    protected $stream = null;
+
     public function __construct($service = '')
     {
         if ($service) {

@@ -30,7 +30,7 @@ class Emitter implements EmitterContracts
             }
         }
     }
-    public function removeAlleventListeners($event = null)
+    public function removeAllEventListeners($event = null)
     {
         if ($event !== null) {
             unset($this->eventListeners[$event]);

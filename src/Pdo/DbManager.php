@@ -20,7 +20,7 @@ class DbManager
     public function get($instance, $new = false) {
         $instance = strtolower($instance);
         if (!isset($this->instances[$instance]) || $new) {
-            if (!isset($this->configs[$intance])) {
+            if (!isset($this->configs[$instance])) {
                 throw new \Exception(sprintf('%s db can`t instance!', $instance), 1);
             }
         }

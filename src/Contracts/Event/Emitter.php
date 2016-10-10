@@ -11,7 +11,7 @@ interface Emitter
     public function on($event, callable $listener);
     public function once($event, callable $listener);
     public function removeListener($event, callable $listener);
-    public function removeAlleventListeners($event = null);
+    public function removeAllEventListeners($event = null);
     public function eventListeners($event);
     public function emit($event, array $arguments = []);
 }
