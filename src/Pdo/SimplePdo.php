@@ -2,6 +2,7 @@
 namespace Beehive\Pdo;
 
 use PDO;
+use Exception;
 
 /**
  * App Facade
@@ -38,10 +39,10 @@ class App extends PDO
         }
     }
 
-    public function update($table, $fileds = [], $where = '1 <> 1')
+    public function update($table, $fields = [], $where = '1 <> 1')
     {
         $sets = [];
-        foreach ($fileds as $filed => $val) {
+        foreach ($fields as $filed => $val) {
             if ($val === null) {
                 $val = 'null';
             } else {
@@ -73,10 +74,9 @@ class App extends PDO
         return isset($data['__COUNT_FILED__']) ? (int)$data['__COUNT_FILED__'] : 0;
     }
 
-    public function insert($table, $fileds = [])
+    public function insert($table, $fields = [])
     {
-        $sets = [];
-        foreach ($fileds as $filed => &$val) {
+        foreach ($fields as $filed => &$val) {
             if ($val === null) {
                 $val = 'null';
             } else {
@@ -87,15 +87,15 @@ class App extends PDO
         $count = $this->exec(sprintf(
             $sql,
             $table,
-            '`' . implode('`, `', array_keys($fileds)) . '`',
-            implode(', ', array_values($fileds))
+            '`' . implode('`, `', array_keys($fields)) . '`',
+            implode(', ', array_values($fields))
         ));
         return $count ? true : false;
     }
 
-    public function insertAndGetId($table, $fileds = [])
+    public function insertAndGetId($table, $fields = [])
     {
-        $res = $this->insert($table, $fileds);
+        $res = $this->insert($table, $fields);
         if ($res) {
             return $this->lastInsertId();
         }

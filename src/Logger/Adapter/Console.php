@@ -12,7 +12,7 @@ use Phalcon\Logger\AdapterInterface;
  */
 class Console extends Adapter implements AdapterInterface
 {
-    public function loginternal($message, $type, $timestamp, $context = null)
+    public function logInternal($message, $type, $timestamp, $context = null)
     {
         $data = $this->getFormatter()->format($message, $type, $timestamp, $context);
         print $data;
