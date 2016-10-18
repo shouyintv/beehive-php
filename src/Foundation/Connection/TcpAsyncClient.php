@@ -29,7 +29,7 @@ class TcpAsyncClient extends Emitter implements Connection
         });
 
         $this->socket->on('error', function ($cli) {
-            Log::error('connection error');
+            Log::error('connection error', ['code' => $cli->errCode]);
             $this->emit(static::EVENT_ERROR, [$this]);
             $this->eventListeners = [];
             $this->socket = null;
