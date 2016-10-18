@@ -51,7 +51,7 @@ Rpc::getFacadeRoot()->setServerId(App::make('config')->get('server.id'));
 Rpc::accept(Beehive\Msa\Service\Ping::class);
 // Rpc::listen(Beehive\Msa\Service\PingEvent::class);
 Rpc::remote('Container.Service.Register', Beehive\Msa\Protocol\Json::class);
-Rpc::remote('TestSvr.Test.Test', Beehive\Msa\Protocol\Json::class);
+Rpc::remote('TestSvr2.Test.Test', Beehive\Msa\Protocol\Json::class);
 Rpc::on(Beehive\Server\Command::EVENT_START, function() {
     Log::debug('msa server start', [
         'server' => App::make('config')->get('server.name'),
@@ -59,7 +59,15 @@ Rpc::on(Beehive\Server\Command::EVENT_START, function() {
         'logDir' => App::make('config')->get('server.logDir')
     ]);
 
-    Rpc::
+    Rpc::instance('TestSvr2.Test.Test')
+        ->then(function($invoker) {
+            if ($invoker->isSuccess()) {
+                Log::info('TestSvr2.Test.Test invoke success');
+            } else {
+                Log::info('TestSvr2.Test.Test invoke error', ['code' => $invoker->getCode()]);
+            }
+        })
+        ->invoke();
 });
 
 Rpc::start();

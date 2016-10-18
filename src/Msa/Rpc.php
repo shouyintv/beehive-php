@@ -134,7 +134,7 @@ class Rpc extends Command
                 $callable->invoker->onResult($newInvoker);
             } else {
                 Log::warning(
-                    'response ',
+                    'response not handler',
                     [
                         'service' => $packet->service,
                         'askid' => $packet->askid,
@@ -211,6 +211,8 @@ class Rpc extends Command
         $protocol = new $protocol([]);
         $packet = $protocol->getPacket();
         $packet->askid = $this->atomic->add();
+        $packet->time = time();
+        $packet->uniqid = $packet->askid;
         $protocol->setServiceName($name);
         $protocol->setInvokerCallable([$this, 'onInvokerInvoke']);
         return $protocol;
@@ -224,7 +226,7 @@ class Rpc extends Command
         $callable = new StdClass;
         $callable->invoker = $invoker;
         $callable->time = microtime(true);
-        $this->callingServices[] = $callable;
+        $this->callingServices[$askid] = $callable;
         $packet->body = $invoker->serialize();
         $this->container->send($packet->pack());
         Log::debug('packet send', ['name' => $packet->name, 'askid' => $packet->askid, 'body' => $packet->body]);
@@ -236,9 +238,14 @@ class Rpc extends Command
             throw new RuntimeException(sprintf('rpc event:%s fail!', $name), 1);
         }
         $protocol = $this->callServices[$name]->protocol;
-        $protocol = new $protocol();
-        $protocol->packet->askid = $this->atomic->add();
-        $protocol->packet->flag |= PacketInterface::FLAG_EVENT;
+        $protocol = new $protocol([]);
+        $packet = $protocol->getPacket();
+        $packet->askid = $this->atomic->add();
+        $packet->time = time();
+        $packet->uniqid = $packet->askid;
+        $packet->flag |= PacketInterface::FLAG_EVENT;
+        $protocol->setServiceName($name);
+        $protocol->setInvokerCallable([$this, 'onInvokerInvoke']);
         return $protocol;
     }
 
