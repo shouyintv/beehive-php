@@ -261,6 +261,7 @@ class Rpc extends Command
 
     public function start()
     {
+        $this->emit(static::EVENT_INIT);
         $this->container->connect();
     }
 }
